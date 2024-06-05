@@ -42,22 +42,12 @@ class FileForQueueing(object):
         cols = line.strip().split(b"\t")
         chrom = cols[0]
 
-        if not chrom.startswith(b"#"):
+        if not cols[0].startswith(b"#"):
+            chrom = self.chromOrder[cols[0]]
             pos = int(cols[1])
         else:
             pos = None
         
-        # Where possible, convert chromosome names into
-        # integers for sorting. If not possible, use
-        # original names.
-        try:
-            chrom = int(chrom.upper().strip(b"CHR")) # Depreciation of this logic as int chromosome creates confusion in decoding ascii to string and visa-versa
-        except Exception:
-            if(chrom in self.chromOrder):
-                chrom = self.chromOrder[chrom]
-            else:
-                pass
-
         heapq.heappush(self.heap, (chrom, pos, line))
 
         while not self.finishedReadingFile and len(self.heap) < 100:
@@ -67,19 +57,12 @@ class FileForQueueing(object):
                 cols = line.strip().split(b"\t")
                 chrom = cols[0]
 
-                if not chrom.startswith(b"#"):
+                if not cols[0].startswith(b"#"):
+                    chrom = self.chromOrder[cols[0]]
                     pos = int(cols[1])
                 else:
                     pos = None
                
-                try:
-                    chrom = int(chrom.upper().strip(b"CHR")) # Depreciation of this logic as int chromosome creates confusion in decoding ascii to string and visa-versa
-                except Exception:
-                    if(chrom in self.chromOrder):
-                        chrom = self.chromOrder[chrom]
-                    else:
-                        pass
-
             except StopIteration:
                 self.finishedReadingFile = True
                 break
@@ -117,21 +100,11 @@ class FileForQueueing(object):
                 cols = line.strip().split(b"\t")
                 chrom = cols[0]
 
-                if not chrom.startswith(b"#"):
+                if not cols[0].startswith(b"#"):
+                    chrom = self.chromOrder[cols[0]]
                     pos = int(cols[1])
                 else:
                     pos = None
-
-                # Where possible, convert chromosome names into
-                # integers for sorting. If not possible, use
-                # original names.
-                try:
-                    chrom = int(chrom.upper().strip(b"CHR"))
-                except Exception:
-                    if(chrom in self.chromOrder):
-                        chrom = self.chromOrder[chrom]
-                    else:
-                        pass
 
                 heapq.heappush(self.heap, (chrom, pos, line))
 
